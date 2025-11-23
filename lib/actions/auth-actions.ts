@@ -10,40 +10,37 @@ export async function signUpAction(formData: FormData) {
   const name = formData.get("name") as string;
 
   await auth.api.signUpEmail({
-    body: {
-      email,
-      password,
-      name,
-    },
+    body: { email, password, name },
+    headers: await headers(),
   });
+
   redirect("/");
 }
+
 
 export async function signInAction(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
   await auth.api.signInEmail({
-    body: {
-      email,
-      password,
-    },
+    body: { email, password },
+    headers: await headers(),
   });
+
   redirect("/");
 }
 
-export const signInSocial = async (provider: "facebook" | "google") => {
+
+export async function signInSocial(provider: "google" | "facebook") {
   const { url } = await auth.api.signInSocial({
     body: {
       provider,
-      callbackURL: "/dashboard",
+      callbackURL: "/dashboard", 
     },
   });
 
-  if (url) {
-    redirect(url);
-  }
-};
+  if (url) redirect(url);
+}
 
 export async function signOutAction() {
   await auth.api.signOut({
